@@ -3,33 +3,21 @@ name: core
 rpc:
   - name: "System"
     filename: system
-    customTypes: 
-      SystemStatus:
-        - name: CrashReporter
-          type: Status
-          key: CrashReporter   
-        - name: Firewall
-          type: Status
-          key: Firewall   
+    customTypes:
+      SystemMetadata:
+        - name: Metadata
+          key: metadata
+      Metadata:
         - name: System
           type: Status
-          key: System   
+          key: system
       Status:
-        - name: StatusCode
-          type: int
-          key: statusCode
+        - name: Status
+          type: interface{}
+          key: status
         - name: Message
           type: string
           key: message
-        - name: LogLocation
-          type: string
-          key: logLocation
-        - name: Timestamp
-          type: string
-          key: timestamp
-        - name: Status
-          type: string
-          key: status
     rpc_calls:
       - name: "Halt"
         method: "POST"
@@ -42,7 +30,7 @@ rpc:
       - name: "Status"
         method: "GET"
         endpoint: "/core/system/status"
-        result_type: "SystemStatus"
+        result_type: "SystemMetadata"
       - name: "DismissStatus"
         method: "POST"
         endpoint: "/core/system/dismiss_status"
@@ -50,7 +38,7 @@ rpc:
           - name: "subject"
             optional: false
             bodyParameter: true
-        result_type: "api.ActionResult"  
+        result_type: "api.ActionResult"
   - name: "Service"
     filename: service
     customTypes:

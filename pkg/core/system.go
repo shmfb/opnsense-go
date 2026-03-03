@@ -10,18 +10,17 @@ import (
 
 // Data structs
 
-type Status struct {
-	StatusCode  int    `json:"statusCode"`
-	Message     string `json:"message"`
-	LogLocation string `json:"logLocation"`
-	Timestamp   string `json:"timestamp"`
-	Status      string `json:"status"`
+type Metadata struct {
+	System Status `json:"system"`
 }
 
-type SystemStatus struct {
-	CrashReporter Status `json:"CrashReporter"`
-	Firewall      Status `json:"Firewall"`
-	System        Status `json:"System"`
+type Status struct {
+	Status  interface{} `json:"status"`
+	Message string      `json:"message"`
+}
+
+type SystemMetadata struct {
+	Metadata `json:"metadata"`
 }
 
 // SystemHalt executes the Halt RPC call of the System controller
@@ -67,7 +66,7 @@ func (c *Controller) SystemReboot(ctx context.Context) (*api.ActionResult, error
 }
 
 // SystemStatus executes the Status RPC call of the System controller
-func (c *Controller) SystemStatus(ctx context.Context) (*SystemStatus, error) {
+func (c *Controller) SystemStatus(ctx context.Context) (*SystemMetadata, error) {
 
 	callParams := []string{}
 	bodyParams := make(map[string]interface{})
@@ -79,7 +78,7 @@ func (c *Controller) SystemStatus(ctx context.Context) (*SystemStatus, error) {
 		BodyParameters: bodyParams,
 	}
 
-	resultData := &SystemStatus{}
+	resultData := &SystemMetadata{}
 	result, err := api.Call(c.Client(), ctx, callOpts, resultData)
 	if err != nil {
 		return nil, fmt.Errorf("Status call failed: %w", err)
